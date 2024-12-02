@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.primaryBg{
+    background: #FFFFFF;
+}
+.bluewala{
+    background: #5F6FFF;
+}
+
+.blueText{
+    color: #5F6FFF;
+}
