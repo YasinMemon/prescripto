@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Login({ setaToken }) {
   const backendUri = import.meta.env.VITE_BACKEND_URI;
@@ -9,16 +10,21 @@ function Login({ setaToken }) {
   const [password, setPassword] = useState("");
 
   const onSubmitHandler = async (e) => {
+    
     e.preventDefault();
     try {
       if (state === "Admin") {
-        const { data } = await axios.post(backendUri + "/api/admin/login", {
+        const { data } = await axios.post(backendUri + "api/admin/login", {
           email,
           password,
         });
 
         if(data.success){
-          console.log(data);
+          setaToken(data.token)
+          localStorage.setItem('token', data.token);
+          toast.success(data.message);
+        }else{
+          toast.error(data.message);
         }
 
       } else {
@@ -91,8 +97,7 @@ function Login({ setaToken }) {
             </div>
           )}
         </div>
-      </form>z
-      b 
+      </form>
     </div>
   );
 }
