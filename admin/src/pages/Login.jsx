@@ -39,7 +39,7 @@ function Login({ setaToken }) {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center overflow-hidden items-center min-h-screen">
       <form
         onSubmit={onSubmitHandler}
         className="bg-[#FFFFFF] sm:h-[340px] sm:w-[400px] ring-[0.5] shadow-sm shadow-black ring-black text-center rounded-[20px]"

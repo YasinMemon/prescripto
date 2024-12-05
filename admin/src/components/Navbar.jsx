@@ -29,7 +29,7 @@ function Navbar() {
           </div>
         </div>
       </nav>
-      <div className={`${showNav ? 'block' : 'hidden'} h-screen w-full fixed top-0 bg-white`}> 
+      <div className={`${showNav ? 'block' : 'hidden'} sm:hidden h-screen w-full fixed top-0 bg-white`}> 
         <div className="flex justify-between items-center py-4 px-5"> 
           <div className="logo flex items-center gap-3">
           <img src="/logo/logo.png" className="h-10" alt="" />
