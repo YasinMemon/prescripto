@@ -4,11 +4,19 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
+::-webkit-scrollbar{
+    @apply hidden
+}
+
 .primaryBg{
     background: #FFFFFF;
 }
 .bluewala{
     background: #5F6FFF;
+}
+
+body{
+    background-color: gainsboro;
 }
 
 .blueText{

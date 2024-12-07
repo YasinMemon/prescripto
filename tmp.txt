@@ -1,0 +1,22 @@
+
+          
+          <li>
+            <NavLink
+              to="/patients"
+              className={({ isActive }) =>
+                `flex justify-start items-center gap-1 sm:ml-16 ml-4 mr-2 cursor-pointer mt-8 text-[18px] ${
+                  isActive ? "relative" : ""
+                }`
+              }
+            >
+              <div className="logo">
+                <FaAddressCard />
+              </div>
+              <div className="section hidden sm:block">Patients</div>
+              {({ isActive }) =>
+                isActive && (
+                  <div className="blue-line h-10 w-[6px] sm:h-[53px] absolute -right-6 top-0 bg-blue-500" />
+                )
+              }
+            </NavLink>
+          </li>
