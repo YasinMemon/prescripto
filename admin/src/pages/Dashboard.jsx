@@ -4,7 +4,7 @@ import Appointments from "../components/Appointments";
 function Dashboard() {
   return (
     <>
-      <div className="overflow-hidden ">
+      <div className="overflow-hidden min-h-screen">
       <div className="flex outfit justify-center font-medium md:flex-row md:justify-start m-3 flex-wrap gap-2 sm:m-5 md:m-10 sm:gap-5 md:gap-16 items-start w-full">
         <div className="flex rounded-md w-[160px] h-[80px] sm:w-[244px] sm:h-[115px] justify-center items-center gap-6 bg-[#FFFFFF] md:gap-4">
           <div className="mt-1">

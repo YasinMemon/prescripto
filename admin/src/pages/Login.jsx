@@ -21,6 +21,7 @@ function Login({ setaToken }) {
 
         if(data.success){
           setaToken(data.token)
+          
           localStorage.setItem('token', data.token);
           toast.success(data.message);
         }else{

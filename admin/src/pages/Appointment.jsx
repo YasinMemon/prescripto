@@ -20,10 +20,28 @@ function Appointment() {
       fees: "₹1,200",
       image: "/dr/doctor.webp",
     },
+    {
+      id: 2,
+      patient: "Emily Brown",
+      age: 34,
+      dateTime: "25th July, 2024, 3:PM",
+      doctor: "Dr. Sarah Lee",
+      fees: "₹1,200",
+      image: "/dr/doctor.webp",
+    },
+    {
+      id: 2,
+      patient: "Emily Brown",
+      age: 34,
+      dateTime: "25th July, 2024, 3:PM",
+      doctor: "Dr. Sarah Lee",
+      fees: "₹1,200",
+      image: "/dr/doctor.webp",
+    },
   ];
 
   return (
-    <div className="outfit sm:m-6 font-medium bg-gray-100 p-6 rounded-md">
+    <div className="outfit min-h-screen sm:m-6 font-medium bg-gray-100 p-6 rounded-md">
       {/* Heading */}
       <p className="text-lg font-semibold mb-4 text-gray-800">All Appointments</p>
       

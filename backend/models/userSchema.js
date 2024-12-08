@@ -1,5 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-import profilePic from "./profilepic";
+import profilePic from "./profilepic.js";
 
 const userSchema = mongoose.Schema({
   name: {

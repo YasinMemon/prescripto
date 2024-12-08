@@ -22,7 +22,7 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
 
 const Slidebar = () => {
   return (
-    <div className="flex overflow-hidden mt-[1px] h-full py-10 sm:pr-32 sm:w-64  border-r border-gray-600 bg-white">
+    <div className="flex mt-[1px] h-full static py-10 sm:pr-32 sm:w-64  border-r border-gray-600 bg-white">
       <div className="outfit ">
         <ul className="sm:ml-12 mx-4">
           <li>
@@ -37,9 +37,9 @@ const Slidebar = () => {
           <li>
             <SidebarItem to="/list" icon={FaClipboardList} label="Doctors List" />
           </li>
-          <li>
+          {/* <li>
             <SidebarItem to="/patients" icon={FaAddressCard} label="Patients" />
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>

@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImCross } from "react-icons/im";
 
-function Navbar() {
+function Navbar({ setAtoken }) {
   const [showNav, setshowNav] = useState(false);
+
+  const logoutHandler = () =>{
+    setAtoken('');
+    localStorage.clear();
+  }
   return (
     <>
       <nav className="flex justify-between sm:px-16 items-center outfit sm:my-4">
@@ -13,12 +18,12 @@ function Navbar() {
         </div>
         <div className="sm:hidden block w-52"></div>
         <div className="rightSide">
-          <button className="bluewala w-[195px] h-[54px] text-[18px] px-4 py-1 hidden sm:block text-white outfit rounded-[46px]">
-            Login
+          <button className="bluewala w-[195px] h-[54px] text-[18px] px-4 py-1 hidden sm:block text-white outfit rounded-[46px]" onClick={logoutHandler} >
+            Logout
           </button>
           <div className="sm:hidden block pr-5 pt-4 font-bold cursor-pointer">
             <button className="bluewala px-4 py-1 text-white outfit rounded-[46px]">
-              Login
+              Logout
             </button>
             {/* <GiHamburgerMenu className="h-10 text-[1.5rem] font-bold" onClick={() => setshowNav(!showNav)} /> */}
           </div>

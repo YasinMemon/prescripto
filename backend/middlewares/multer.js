@@ -1,9 +1,12 @@
-import multer from 'multer';
+import multer from "multer";
 
 const storage = multer.diskStorage({
-    filename: function(req, file, callback){
-        callback(null, file.originalname);
-    }
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Directory where files will be stored
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Unique file name
+  },
 });
 
 const upload = multer({ storage });

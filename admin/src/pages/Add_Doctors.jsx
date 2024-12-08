@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-function Add_Doctors({ atoken }) {
+function Add_Doctors({ aToken }) {
   const [doctorImg, setDoctorImg] = useState("");
   const [docName, setDocName] = useState("");
   const [docEmail, setDocEmail] = useState("");
@@ -14,21 +14,22 @@ function Add_Doctors({ atoken }) {
   const [address, setAddress] = useState("");
   const [address2, setAddress2] = useState("");
   const [about, setAbout] = useState("");
+  const [preview, setPreview] = useState('')
 
   const backendUri = import.meta.env.VITE_BACKEND_URI;
 
   const handleDoctorImg = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setDoctorImg(reader.result);
-      reader.readAsDataURL(file);
+      setDoctorImg(file);
+      setPreview(URL.createObjectURL(file))
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+      console.log(doctorImg);
+      
     // Basic Validation
     if (!docName || !docEmail || !docPassword || !fees || !address) {
       return toast.error("Please fill in all required fields.");
@@ -47,16 +48,33 @@ function Add_Doctors({ atoken }) {
       formData.append("experience", experience);
       formData.append("fees", fees);
       formData.append("speciality", speciality);
-      formData.append("education", education);
-      formData.append("address", JSON.stringify({ line1: address, line2: address2 }));
+      formData.append("degree", education);
+      formData.append(
+        "address",
+        JSON.stringify({ line1: address, line2: address2 })
+      );
       formData.append("about", about);
 
-      const { data } = await axios.post(`${backendUri}api/admin/add-doctor`, formData, {
-        headers: { atoken
-          // Authorization: `Bearer ${atoken}`,
-          // "Content-Type": "multipart/form-data",
-        },
+      console.log('token from add doctor: ', aToken);
+      
+
+      formData.forEach((value, key) => {
+        console.log(`${key} : ${value instanceof File ? value.name : value}`);
       });
+      
+      
+      
+      const { data } = await axios.post(
+        `${backendUri}api/admin/add-doctor`,
+        formData,
+        {
+          headers: {
+            // atoken,
+            Authorization: `Bearer ${aToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (data.success) {
         toast.success(data.message);
@@ -85,15 +103,15 @@ function Add_Doctors({ atoken }) {
     <>
       <form
         onSubmit={handleSubmit}
-        className="p-4 bg-white rounded-md outfit m-[5vh] sm:p-10 font-medium"
+        className="p-4 bg-white overflow-y-scroll  h-full rounded-md outfit m-[5vh] sm:p-10 font-medium"
       >
         {/* Doctor Image Section */}
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
           <div>
             <label htmlFor="img">
               <img
-                src={doctorImg || "/icons/upload.svg"}
-                className="h-24 w-24 rounded-full cursor-pointer object-cover"
+                src={preview || "/icons/upload.svg"}
+                className="h-24 w-24 rounded-full cursor-pointer object-cover object-top"
                 alt="Doctor"
               />
             </label>
@@ -108,7 +126,9 @@ function Add_Doctors({ atoken }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-6">
           {/* Left Column */}
           <div>
-            <label htmlFor="name" className="block">Doctor Name:</label>
+            <label htmlFor="name" className="block">
+              Doctor Name:
+            </label>
             <input
               type="text"
               id="name"
@@ -119,7 +139,9 @@ function Add_Doctors({ atoken }) {
               aria-label="Doctor Name"
             />
 
-            <label htmlFor="email" className="block mt-4">Doctor Email:</label>
+            <label htmlFor="email" className="block mt-4">
+              Doctor Email:
+            </label>
             <input
               type="email"
               id="email"
@@ -130,7 +152,9 @@ function Add_Doctors({ atoken }) {
               aria-label="Doctor Email"
             />
 
-            <label htmlFor="password" className="block mt-4">Doctor Password:</label>
+            <label htmlFor="password" className="block mt-4">
+              Doctor Password:
+            </label>
             <input
               type="password"
               id="password"
@@ -141,7 +165,9 @@ function Add_Doctors({ atoken }) {
               aria-label="Doctor Password"
             />
 
-            <label htmlFor="experience" className="block mt-4">Experience:</label>
+            <label htmlFor="experience" className="block mt-4">
+              Experience:
+            </label>
             <select
               id="experience"
               value={experience}
@@ -151,11 +177,15 @@ function Add_Doctors({ atoken }) {
             >
               {/* Experience Options */}
               {Array.from({ length: 8 }, (_, i) => (
-                <option key={i} value={`${i + 1} Year`}>{`${i + 1} Year${i > 0 ? "s" : ""}`}</option>
+                <option key={i} value={`${i + 1} Year`}>{`${i + 1} Year${
+                  i > 0 ? "s" : ""
+                }`}</option>
               ))}
             </select>
 
-            <label htmlFor="fees" className="block mt-4">Fees:</label>
+            <label htmlFor="fees" className="block mt-4">
+              Fees:
+            </label>
             <input
               type="number"
               id="fees"
@@ -168,10 +198,74 @@ function Add_Doctors({ atoken }) {
           </div>
 
           {/* Right Column */}
+          <div>
+            <div>
+              <label htmlFor="name" className="block">
+                Specialization:
+              </label>
+              <select
+                type="text"
+                id="specialization"
+                value={speciality}
+                onChange={(e) => setSpeciality(e.target.value)}
+                className="w-full lg:w-[400px] rounded-md border border-gray-300
+                p-2"
+              >
+                <option value="General Phision">General Phision</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Pediatricians">Pediatricians</option>
+                <option value="Neurologist">Neurologist</option>
+                <option value="Gastroenterologist">Gastroenterologist</option>
+              </select>
+              <label htmlFor="email" className="block mt-4">
+                Education:
+              </label>
+              <input
+                type="text"
+                id="education"
+                value={education}
+                onChange={(e) => setEducation(e.target.value)}
+                className="w-full lg:w-[400px] rounded-md border border-gray-300 p-2"
+                placeholder="Education"
+              />
+
+              <label htmlFor="password" className="block mt-4">
+                Address:
+              </label>
+              <input
+                type="text"
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full lg:w-[400px] rounded-md border border-gray-300 p-2"
+                placeholder="Line 1"
+              />
+
+              <input
+                type="text"
+                id="address2"
+                value={address2}
+                onChange={(e) => setAddress2(e.target.value)}
+                className="w-full mt-4 lg:w-[400px] rounded-md border border-gray-300 p-2"
+                placeholder="Line 2"
+              />
+            </div>
+          </div>
           {/* Similar corrections for other fields */}
         </div>
         {/* Submit Button */}
-        <button type="submit" className="mt-6 px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Add Doctor</button>
+        <div>
+          <textarea name="about" id="about" rows='4' className="resize-none w-full mt-4 mr-10 rounded-md border border-gray-300 p-2" placeholder="something about you" value={about} onChange={(e) => setAbout(e.target.value)}>
+
+          </textarea>
+        </div>
+        <button
+          type="submit"
+          className="mt-6 px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+        >
+          Add Doctor
+        </button>
       </form>
     </>
   );
