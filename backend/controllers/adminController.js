@@ -31,10 +31,10 @@ const addDoctor = async (req, res) => {
       !degree ||
       !experience ||
       !about ||
-      !available ||
+      // !available ||
       !fees ||
       !address ||
-      !slot_booked ||
+      // !slot_booked ||
       !imgFile
     ) {
       return res.json({ success: false, message: "all fields are required" });
@@ -43,7 +43,7 @@ const addDoctor = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.json({
         success: false,
-        message: "Please enter a valie email",
+        message: "Please enter a valid email",
       });
     }
 
@@ -82,7 +82,7 @@ const adminLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (
-      email !== process.env.ADMIN_EMAIL &&
+      email !== process.env.ADMIN_EMAIL ||
       password !== process.env.ADMIN_PASSWORD
     ) {
       return res.json({ success: false, message: "Invalid Credentials" });

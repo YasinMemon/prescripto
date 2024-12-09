@@ -11,9 +11,9 @@ const adminAuth = async (req,res,next) => {
 
         const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
 
-        // if(decoded_token !== process.env.ADMIN_EMAIL && decoded_token !== process.env.ADMIN_PASSWORD){
-        //     return res.json({ sucess:false, message: "not authorized admin"});
-        // }
+        if(decoded_token !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD){
+            return res.json({ sucess:false, message: "not authorized admin"});
+        }
 
         req.admin = decoded_token;
         next();
