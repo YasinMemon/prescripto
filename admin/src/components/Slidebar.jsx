@@ -20,11 +20,11 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
   </NavLink>
 );
 
-const Slidebar = () => {
+const Slidebar = ({ aToken, dToken }) => {
   return (
     <div className="flex mt-[1px] h-full static py-10 sm:pr-32 sm:w-64  border-r border-gray-600 bg-white">
       <div className="outfit ">
-        <ul className="sm:ml-12 mx-4">
+        {aToken && <ul className="sm:ml-12 mx-4">
           <li>
             <SidebarItem to="/" icon={MdDashboard} label="Dashboard" />
           </li>
@@ -37,10 +37,19 @@ const Slidebar = () => {
           <li>
             <SidebarItem to="/list" icon={FaClipboardList} label="Doctors List" />
           </li>
-          {/* <li>
-            <SidebarItem to="/patients" icon={FaAddressCard} label="Patients" />
-          </li> */}
-        </ul>
+        </ul> }
+        {dToken && <ul className="sm:ml-12 mx-4 h-screen">
+          <li>
+            <SidebarItem to="/doctor-dash" icon={MdDashboard} label="Dashboard" />
+          </li>
+          <li>
+            <SidebarItem to="/doc-appointments" icon={FaEdit} label="Appointments" />
+          </li>
+          <li>
+            <SidebarItem to="/doc-profile" icon={FaAddressCard} label="Profile" />
+          </li>
+          
+        </ul> }
       </div>
     </div>
   );

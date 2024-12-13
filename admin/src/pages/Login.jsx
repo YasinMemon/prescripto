@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function Login({ setaToken }) {
+function Login({ setaToken, setDToken }) {
   const backendUri = import.meta.env.VITE_BACKEND_URI;
 
   const [state, setstate] = useState("Admin");
@@ -10,7 +10,6 @@ function Login({ setaToken }) {
   const [password, setPassword] = useState("");
 
   const onSubmitHandler = async (e) => {
-    
     e.preventDefault();
     try {
       if (state === "Admin") {
@@ -18,21 +17,25 @@ function Login({ setaToken }) {
           email,
           password,
         });
-
-        if(data.success){
-          setaToken(data.token)
-          
-          localStorage.setItem('token', data.token);
+        if (data.success) {
+          setaToken(data.token);
+          localStorage.setItem("token", data.token);
           toast.success(data.message);
-        }else{
+        } else {
           toast.error(data.message);
         }
-
       } else {
-        const data = axios.post(backendUri + "/api/doctor/login", {
+        const { data } = await axios.post(backendUri + "api/doctors/login", {
           email,
           password,
         });
+        if (data.success) {
+          setDToken(data.token);
+          localStorage.setItem("dtoken", data.token);
+          toast.success(data.message);
+        } else {
+          toast.error(data.message);
+        }
       }
     } catch (error) {
       console.log("something went wrong", error.message);

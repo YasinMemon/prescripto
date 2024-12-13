@@ -256,9 +256,9 @@ function Add_Doctors({ aToken }) {
         </div>
         {/* Submit Button */}
         <div>
-          <textarea name="about" id="about" rows='4' className="resize-none w-full mt-4 mr-10 rounded-md border border-gray-300 p-2" placeholder="something about you" value={about} onChange={(e) => setAbout(e.target.value)}>
-
-          </textarea>
+          <pre>
+          <textarea name="about" id="about" rows='4' className="resize-none w-full mt-4 mr-10 rounded-md border border-gray-300 p-2" placeholder="something about you" value={about} onChange={(e) => setAbout(e.target.value)}></textarea>
+          </pre>
         </div>
         <button
           type="submit"

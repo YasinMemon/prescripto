@@ -3,6 +3,8 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
+import appointmentModel from "../models/appointmentModel.js";
+import userModel from "../models/userSchema.js";
 
 // API for upload a new doctor
 const addDoctor = async (req, res) => {
@@ -101,9 +103,43 @@ const getAllDoctors = async (req, res) => {
     const doctors = await doctorModel.find({}).select("-password");
     return res.json({ success: true, message: "done", doctors });
   } catch (error) {
-    console.log("erro while recieving doctors" + error.message);
+    console.log("error while recieving doctors" + error.message);
     res.json({ success: false, message: error.message });
   }
 };
 
-export { addDoctor, adminLogin, getAllDoctors };
+const allAppointments = async (req, res) => {
+  try {
+    const appointments = await appointmentModel.find({}).populate("docData");
+    console.log(appointments);
+    return res.json({ success: true, message: "done", appointments });
+  } catch (error) {
+    console.log("error while recieving doctors" + error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const cancelAppointments = async (req, res) => {};
+
+const adminDashboard = async (req, res) => {
+  try {
+    const doctors = await doctorModel.find({});
+    const users = await userModel.find({});
+    const appointments = await appointmentModel.find({});
+
+    const dashData = {
+      doctors: doctors.length,
+      appointments: appointments.length,
+      patients: (await users).length,
+      latestAppointments: appointments.reverse().slice(0, 5),
+    };
+
+    const docData = JSON.parse(dashData.latestAppointments.docData);
+    return res.json({ success:true, dashData, docData});
+  } catch (error) {
+    console.log("error while admin dashboard" + error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { addDoctor, adminLogin, getAllDoctors, allAppointments, adminDashboard };
