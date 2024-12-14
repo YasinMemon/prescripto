@@ -51,7 +51,7 @@ function Navbar({ token, setToken }) {
                 <div className="absolute top-full mt-2 z-20 bg-gray-100 rounded shadow-lg right-0">
                   <div className="w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
                     <p className="cursor-pointer hover:text-blue-500">
-                      My Profile
+                     <Link to='/profile' >My Profile</Link>
                     </p>
                     <p className="cursor-pointer hover:text-blue-500">
                       My Appointments

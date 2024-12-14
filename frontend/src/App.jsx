@@ -11,6 +11,7 @@ import Footer from "./components/Footer.jsx";
 import AboutUs from "./pages/About.jsx";
 import ContactUs from "./pages/Contact.jsx";
 import Login from "./pages/Login.jsx";
+import Profile from "./pages/Profile.jsx";
 
 export default function App() {
   const [token, setToken] = useState('dsjkshjdf')
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/about" element={<AboutUs/>} ></Route>
           <Route path="/contact" element={<ContactUs/>} ></Route>
           <Route path="/login" element={<Login/>} ></Route>
+          <Route path="/profile" element={<Profile/>} ></Route>
         </Routes>
         <Footer/>
       </Router>
