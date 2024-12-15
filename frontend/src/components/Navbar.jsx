@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 function Navbar({ token, setToken }) {
   const [showNav, setShowNav] = useState(false); // Mobile menu toggle
   const [showProfile, setShowProfile] = useState(false); // Profile dropdown toggle
+  const logoutHandler = () => {
+    setToken("");
+    localStorage.clear();
+  };
 
   return (
     <>
@@ -13,9 +17,11 @@ function Navbar({ token, setToken }) {
         {/* Left Side */}
         <div className="flex items-center gap-4">
           <img src="/logo/logo.svg" className="h-8" alt="Logo" />
-          <button className="hidden md:block bg-blue-500 px-4 py-2 text-white rounded-lg font-semibold">
-            Admin
-          </button>
+          <a href="http://localhost:5174">
+            <button className="hidden md:block bg-blue-500 px-4 py-2 text-white rounded-lg font-semibold">
+              Admin
+            </button>
+          </a>
         </div>
 
         {/* Center Links (Desktop Only) */}
@@ -47,16 +53,21 @@ function Navbar({ token, setToken }) {
               <img src="/profile.svg" alt="Profile" />
               <img src="./dropdow.svg" alt="Dropdown Icon" />
               {/* Dropdown Menu */}
-              {showProfile && token &&(
+              {showProfile && token && (
                 <div className="absolute top-full mt-2 z-20 bg-gray-100 rounded shadow-lg right-0">
                   <div className="w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
                     <p className="cursor-pointer hover:text-blue-500">
-                     <Link to='/profile' >My Profile</Link>
+                      <Link to="/profile">My Profile</Link>
                     </p>
                     <p className="cursor-pointer hover:text-blue-500">
-                      My Appointments
+                      <Link to="/appointments">My Appointments </Link>
                     </p>
-                    <p onClick={() => setToken('')} className="cursor-pointer hover:text-red-500">Logout</p>
+                    <p
+                      onClick={logoutHandler}
+                      className="cursor-pointer hover:text-red-500"
+                    >
+                      Logout
+                    </p>
                   </div>
                 </div>
               )}

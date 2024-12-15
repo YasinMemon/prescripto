@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from "react";
 import Appointments from "../components/Appointments";
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function Dashboard({ token }) {
-  const backend = import.meta.env.VITE_BACKEND_URI
-  const [dashboard, setDashboard] = useState({})
+  const backend = import.meta.env.VITE_BACKEND_URI;
+  const [dashboard, setDashboard] = useState({});
   const getData = async () => {
     try {
-      const { data } = await axios.get(backend + 'api/admin/dashboard', {
-        headers: { authorization: `Bearer ${token}`}
+      const { data } = await axios.get(backend + "api/admin/dashboard", {
+        headers: { authorization: `Bearer ${token}` },
       });
-      console.log(data)
-      if(data?.success){
+      if (data?.success) {
         setDashboard(data.dashData);
-        console.log(data);
-        console.log(dashboard);
+        console.log(data.dashData);
       }
     } catch (error) {
-      console.log('something went wrong', error.message);
+      console.log("something went wrong", error.message);
       toast.error(error.message);
     }
   };
 
   useEffect(() => {
     getData();
-  }, [])
+  }, []);
 
   return (
     <>

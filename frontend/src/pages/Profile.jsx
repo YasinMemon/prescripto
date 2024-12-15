@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Login from "../pages/Login.jsx"
 
-function Profile() {
+function Profile({ token }) {
+  const backend = import.meta.env.VITE_BACKEND_URL;
+
+  const [profilePic, setProfilePic] = useState("");
+  const [original, setOrigin] = useState('');
   const [userData, setUserData] = useState({
     name: "Edward Vincent",
-    img: "",
     email: "rechard@gmail.com",
     phone: "+91 87437 78324",
     address: {
@@ -16,38 +22,116 @@ function Profile() {
 
   const [isEditing, setIsEditing] = useState(false);
 
+  const getData = async () => {
+    try {
+      const { data } = await axios.get(backend + "/api/user/profile", {
+        headers: { authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        setUserData(data.userData);
+        setProfilePic(data.userData.img)        
+        console.log("user before updated data: " + data.userData)
+      } else {
+        console.log(data.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+const updateProfilePic = (e) => {
+  const profile_img = e.target.files[0];
+  if(profile_img){
+    setOrigin(profile_img);
+    setProfilePic(URL.createObjectURL(profile_img));
+  }
+
+}
+
+  const updateProfile = async () => {
+
+    const formData = new FormData();
+
+    formData.append('name', userData.name)
+    formData.append('phone', userData.phone )
+    formData.append('address',JSON.stringify(userData.address))
+    formData.append('dob', userData.dob)
+    formData.append('gender', userData.gender);
+
+    if(profilePic && original){
+      profilePic && formData.append('img', original );
+    }
+
+    try {
+      const { data } = await axios.post(
+        backend + "/api/user/update",
+        formData,
+        {
+          headers: { authorization: `Bearer ${token}`},
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        await getData();
+        setIsEditing(false);
+
+      } else {
+        toast.error(data.message);
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  },[]);
+
   return (
-    <div className="p-4">
+    <div className="p-4 pt-2">
       {/* Profile Section */}
       <div>
         <div
           className={`${
-            userData.img === "" ? "p-6" : ""
-          } mx-auto bg-gray-400 w-full max-w-[12rem] h-[12rem] my-10 rounded-md`}
+            profilePic === "" ? "" : ""
+          } mx-auto bg-gray-400 w-full max-w-[12rem] h-[12rem] my-3 mb-16 rounded-md`}
         >
           <label htmlFor="profile">
             <img
-              src={userData.img !== "" ? userData.img : "./avatar.png"}
+              src={profilePic !== "" ? profilePic : "./avatar.png"}
               className={`${
-                userData.img !== "" ? "h-full object-cover" : "w-28"
-              } mx-auto cursor-pointer rounded-md`}
+                profilePic !== "" ? "h-full w-full object-cover" : "w-28 cursor-pointer"
+              } mx-auto rounded-md`}
               alt="Profile"
             />
-            <input
-              onChange={(e) =>
-                setUserData({
-                  ...userData,
-                  img: URL.createObjectURL(e.target.files[0]),
-                })
-              }
-              type="file"
-              id="profile"
-              hidden
-            />
+            {isEditing && (
+              <input
+                onChange={(e) => updateProfilePic(e)}
+                type="file"
+                id="profile"
+                hidden
+              />
+            )}
           </label>
-          <p className="mt-4 text-center text-lg font-semibold">
-            {userData.name}
-          </p>
+          {!isEditing ? (
+            <p className="mt-4 text-center text-lg font-semibold">
+              {userData.name}
+            </p>
+          ) : (
+            <input
+              value={userData.name}
+              onChange={(e) =>
+                setUserData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className="ring-1 mt-6 mx-auto mb-3 ring-black rounded-md p-1"
+              type="text"
+              placeholder="Enter your name"
+            />
+          )}
         </div>
       </div>
 
@@ -72,6 +156,10 @@ function Profile() {
             <>
               <p>Phone:</p>
               <input
+                value={userData.phone}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, phone: e.target.value }))
+                }
                 className="ring-1 ring-black rounded-md p-1"
                 type="number"
                 placeholder="Enter new number"
@@ -89,20 +177,34 @@ function Profile() {
               <input
                 className="ring-1 ring-black rounded-md p-1"
                 type="text"
+                value={userData.address?.line1}
+                onChange={(e) =>
+                  setUserData((prev) => ({
+                    ...prev,
+                    address: { ...prev.address, line1: e.target.value },
+                  }))
+                }
                 placeholder="Line1"
               />
               <p></p>
               <input
                 className="ring-1 ring-black rounded-md p-1"
+                value={userData.address?.line2}
+                onChange={(e) =>
+                  setUserData((prev) => ({
+                    ...prev,
+                    address: { ...prev.address, line2: e.target.value },
+                  }))
+                }
                 type="text"
                 placeholder="Line2"
               />
             </>
           ) : (
             <>
-              <p>{userData.address.line1}</p>
+              <p>{userData.address?.line1 || 'Address not Provided'}</p>
               <p></p>
-              <p>{userData.address.line2}</p>
+              <p>{userData.address?.line2 || 'Address not Provided'}</p>
             </>
           )}
         </div>
@@ -113,9 +215,35 @@ function Profile() {
         </p>
         <div className="grid grid-cols-2 mt-4 w-full max-w-[30vw] md:max-w-[20vw]">
           <p>Gender:</p>
-          <p>{userData.gender}</p>
+          {isEditing ? (
+            <div>
+              <select
+                name="gender"
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, gender: e.target.value }))
+                }
+                value={userData.gender}
+                id="gender"
+              >
+                <option value="Male">male</option>
+                <option value="female">female</option>
+              </select>
+            </div>
+          ) : (
+            <p>{userData.gender}</p>
+          )}
           <p>DOB:</p>
-          <p>{userData.dob}</p>
+          {isEditing ? (
+            <input
+              onChange={(e) =>
+                setUserData((prev) => ({ ...prev, dob: e.target.value }))
+              }
+              className="ring-1 ring-black rounded-md p-1"
+              type="date"
+            />
+          ) : (
+            <p>{userData.dob}</p>
+          )}
         </div>
 
         {/* Edit/Save Button */}
@@ -129,7 +257,7 @@ function Profile() {
             </button>
           ) : (
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={updateProfile}
               className="ring-1 ring-black px-8 py-2 rounded-full hover:bg-gray-200"
             >
               Save
@@ -138,7 +266,7 @@ function Profile() {
         </div>
       </div>
     </div>
-  );
+  ) 
 }
 
 export default Profile;

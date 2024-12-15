@@ -5,6 +5,7 @@ import userModel from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/DoctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
+import razorpay from "razorpay";
 
 const registerUser = async (req, res) => {
   try {
@@ -86,8 +87,10 @@ const updateProfile = async (req, res) => {
     if (!name || !phone || !dob || !gender) {
       return res.json({ success: false, message: "Data missing" });
     }
+
     const parsedAddress = address ? JSON.parse(address) : null;
 
+    // Update user details in database
     await userModel.findByIdAndUpdate(userId, {
       name,
       phone,
@@ -96,18 +99,18 @@ const updateProfile = async (req, res) => {
       gender,
     });
 
+    // If image file exists, upload it to Cloudinary
     if (imgFile) {
-      const imgUpload = await cloudinary.uploader.upload(imgUpload.path, {
+      const imgUpload = await cloudinary.uploader.upload(imgFile.path, {
         resource_type: "image",
       });
-      const imgUrl = (await imgUpload).secure_url;
-
+      const imgUrl = imgUpload.secure_url;
       await userModel.findByIdAndUpdate(userId, { img: imgUrl });
     }
 
-    return res.json({ success: true, message: "udpated successfull" });
+    return res.json({ success: true, message: "Updated successfully" });
   } catch (error) {
-    console.log("error during updating user profile", error.message);
+    console.log("Error during updating user profile", error.message);
     return res.json({ success: false, message: error.message });
   }
 };
@@ -165,10 +168,17 @@ const listAppointment = async (req, res) => {
     const { userId } = req.body;
 
     const appointments = await appointmentModel.find({ userId });
-    return res.json({ success: true, message: "appointments", appointments });
+
+    return res.json({
+      success: true,
+      message: "Appointments fetched successfully",
+      appointments,
+    });
   } catch (error) {
-    console.log("error during fetching appointments ", error.message);
-    return res.json({ success: true, message: error.message });
+    console.error("Error during fetching appointments:", error.message);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -181,7 +191,9 @@ const cancelAppointment = async (req, res) => {
       return res.json({ success: false, message: "Unauthorized action" });
     }
 
-    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
 
     const { docId, slotDate, slotTime } = appointmentData;
 
@@ -202,6 +214,42 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const razorpayInstance = new razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+const paymentRazorpay = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+    if (!appointmentId) {
+      return res.json({ success: false, message: "Appointment ID is required" });
+    }
+    const appointmentData = await appointmentModel.findById(appointmentId);
+    if (!appointmentData)
+      return res.json({
+        success: false,
+        message: "Order cancelled or not found",
+      });
+
+    const options = {
+      amount: appointmentData.amount * 100,
+      currency: "INR",
+      receipt: appointmentId,
+    };
+
+    const order = await razorpayInstance.orders.create(options)
+
+    return res.json({ success: true, order });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const varifyPayment = async (req, res) => {
+    const { razorpay_order_id } = req.body
+}
+
 export {
   registerUser,
   loginUser,
@@ -209,5 +257,6 @@ export {
   updateProfile,
   bookAppointment,
   listAppointment,
-  cancelAppointment
+  cancelAppointment,
+  paymentRazorpay,
 };

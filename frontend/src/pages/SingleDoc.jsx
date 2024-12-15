@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Slots from "../components/Slots";
 import Related from "../components/Related";
 
-function SingleDoc() {
+function SingleDoc({ token }) {
   const doctors = useSelector((state) => state.doctor.doctors);
   const { id } = useParams();
   const [doc, setDoc] = useState("");
@@ -53,7 +53,7 @@ function SingleDoc() {
           </div>
         </div>
         </div>
-      <Slots/>
+      <Slots token={token} findDoc={findDoc} docId={id} />
       </div>
     </div>
       <Related docId={doc._id} speciality={doc.speciality} />
