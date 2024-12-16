@@ -1,28 +1,30 @@
 import mongoose from "mongoose";
 
-const appointmentSchema = mongoose.Schema({
+const appointmentSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user", // Reference to User collection
     required: true,
   },
   docId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "doctor", // Reference to Doctor collection
     required: true,
   },
   slotDate: {
-    type: String,
+    type: String, // Format: "dd_mm_yyyy"
     required: true,
   },
   slotTime: {
-    type: String,
+    type: String, // Format: "HH:mm AM/PM"
     required: true,
   },
   userData: {
-    type: String,
+    type: Object, // Embedded user data
     required: true,
   },
   docData: {
-    type: String,
+    type: Object, // Embedded doctor data
     required: true,
   },
   amount: {
@@ -30,8 +32,8 @@ const appointmentSchema = mongoose.Schema({
     required: true,
   },
   date: {
-    type: Number,
-    required: true,
+    type: Date, // Automatically manage dates
+    default: Date.now,
   },
   cancelled: {
     type: Boolean,
@@ -47,5 +49,8 @@ const appointmentSchema = mongoose.Schema({
   },
 });
 
-const appointmentModel = mongoose.model.appointment || mongoose.model( 'appointment', appointmentSchema);
+// Prevent re-compiling the model
+const appointmentModel =
+  mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
+
 export default appointmentModel;

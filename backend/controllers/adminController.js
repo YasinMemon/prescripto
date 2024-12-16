@@ -110,8 +110,7 @@ const getAllDoctors = async (req, res) => {
 
 const allAppointments = async (req, res) => {
   try {
-    const appointments = await appointmentModel.find({}).populate("docData");
-    // console.log(appointments);
+    const appointments = await appointmentModel.find({})
     return res.json({ success: true, message: "done", appointments });
   } catch (error) {
     console.log("error while recieving doctors" + error.message);
