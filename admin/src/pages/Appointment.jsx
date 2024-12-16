@@ -5,9 +5,11 @@ import { toast } from "react-toastify";
 function Appointment({ token }) {
   const backendUrl = import.meta.env.VITE_BACKEND_URI;
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getAppointments = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(
           `${backendUrl}api/admin/appointments`,
@@ -18,7 +20,8 @@ function Appointment({ token }) {
 
         if (data.success) {
           setAppointments(data.appointments);
-          
+          setLoading(false);
+          console.log(data.appointments)
         } else {
           toast.error(data.message);
           console.log(data.message);
@@ -44,7 +47,7 @@ function Appointment({ token }) {
 
       {/* Table Container */}
       <div className="overflow-x-auto bg-white shadow-md rounded-md w-full">
-        <table className="w-full border-collapse text-left text-sm sm:text-base">
+        { loading ? ( <p>Loading</p> ) : ( <table className="w-full border-collapse text-left text-sm sm:text-base">
           {/* Table Head */}
           <thead>
             <tr className="bg-gray-200 text-gray-700">
@@ -69,18 +72,20 @@ function Appointment({ token }) {
                     className="w-10 h-10 rounded-full hidden sm:block"
                     alt={appointment.userData?.name || "User"}
                   />
+                </td>
+                <td>
                   <div>
-                    <p className="font-semibold">{appointment.userData?.name}</p>
+                    <p className="font-semibold">{appointment?.userData?.name || " N/A"}</p>
                   </div>
                 </td>
                 <td className="sm:px-4 px-1 py-3 border-t hidden sm:table-cell">
-                  {appointment.userData?.age || "N/A"}
+                  {appointment?.userData?.age || "N/A"}
                 </td>
                 <td className="sm:px-4 px-1 py-3 border-t">
                   {appointment.slotDate} at {appointment.slotTime}
                 </td>
                 <td className="sm:px-4 px-1 py-3 border-t">
-                  {appointment.docData?.name || "N/A"}
+                  {appointment?.docData?.name || "N/A"}
                 </td>
                 <td className="sm:px-4 px-1 py-3 border-t">
                   ₹{appointment.amount}
@@ -88,7 +93,7 @@ function Appointment({ token }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table> )}
       </div>
     </div>
   );

@@ -25,5 +25,5 @@ app.get("/", (req, res) => {
     return res.json("Api Working");
 });
 
-export default app
-// app.listen(port, () => console.log("App started at", port));
+// export default app
+app.listen(port, () => console.log("App started at", port));

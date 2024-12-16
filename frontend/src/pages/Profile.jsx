@@ -119,7 +119,7 @@ const updateProfilePic = (e) => {
           </label>
           {!isEditing ? (
             <p className="mt-4 text-center text-lg font-semibold">
-              {userData.name}
+              {userData?.name}
             </p>
           ) : (
             <input
@@ -150,7 +150,7 @@ const updateProfilePic = (e) => {
         >
           <p>Email:</p>
           <p>
-            <a href={`mailto:${userData.email}`}>{userData.email}</a>
+            <a href={`mailto:${userData?.email}`}>{userData?.email}</a>
           </p>
           {isEditing ? (
             <>
@@ -168,7 +168,7 @@ const updateProfilePic = (e) => {
           ) : (
             <>
               <p>Phone:</p>
-              <p>{userData.phone}</p>
+              <p>{userData?.phone}</p>
             </>
           )}
           <p>Address:</p>
@@ -202,9 +202,9 @@ const updateProfilePic = (e) => {
             </>
           ) : (
             <>
-              <p>{userData.address?.line1 || 'Address not Provided'}</p>
+              <p>{userData?.address?.line1 || 'Address not Provided'}</p>
               <p></p>
-              <p>{userData.address?.line2 || 'Address not Provided'}</p>
+              <p>{userData?.address?.line2 || 'Address not Provided'}</p>
             </>
           )}
         </div>
@@ -230,7 +230,7 @@ const updateProfilePic = (e) => {
               </select>
             </div>
           ) : (
-            <p>{userData.gender}</p>
+            <p>{userData?.gender}</p>
           )}
           <p>DOB:</p>
           {isEditing ? (
@@ -242,7 +242,7 @@ const updateProfilePic = (e) => {
               type="date"
             />
           ) : (
-            <p>{userData.dob}</p>
+            <p>{userData?.dob}</p>
           )}
         </div>
 
